@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Button } from 'react-native-elements';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
@@ -39,7 +39,7 @@ const SignInScreen = () => {
       {!!value.error && <View style={styles.error}><Text>{value.error}</Text></View>}
 
       <View style={styles.controls}>
-        <Input
+        <TextInput
           placeholder='Email'
           containerStyle={styles.control}
           value={value.email}
@@ -50,7 +50,7 @@ const SignInScreen = () => {
           />}
         />
 
-        <Input
+        <TextInput
           placeholder='Password'
           containerStyle={styles.control}
           value={value.password}

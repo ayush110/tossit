@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Button } from 'react-native-elements';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
@@ -43,7 +43,7 @@ const [value, setValue] = React.useState({
       {!!value.error && <View style={styles.error}><Text>{value.error}</Text></View>}
 
       <View style={styles.controls}>
-        <Input
+        <TextInput
           placeholder='Email'
           containerStyle={styles.control}
           value={value.email}
@@ -54,7 +54,7 @@ const [value, setValue] = React.useState({
           />}
         />
 
-        <Input
+        <TextInput
           placeholder='Password'
           containerStyle={styles.control}
           value={value.password}

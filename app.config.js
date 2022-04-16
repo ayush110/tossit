@@ -21,6 +21,8 @@ export default {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.tossit",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
