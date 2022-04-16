@@ -1,4 +1,5 @@
-{
+
+export default {
   "expo": {
     "name": "tossit",
     "slug": "tossit",
@@ -27,6 +28,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      apiKey: "AIzaSyA78abVcVaeys7xxRFEzzzEW7FQCl2TkKs",
+  authDomain: "toss-it-56261.firebaseapp.com",
+  projectId: "toss-it-56261",
+  storageBucket: "toss-it-56261.appspot.com",
+  messagingSenderId: "1022687635194",
+  appId: "1:1022687635194:web:7dd0cc1ab604de15dacb43",
+  measurementId: "G-2THZ1ZF0R6"
     }
   }
 }
