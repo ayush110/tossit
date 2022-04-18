@@ -21,19 +21,19 @@ function UserStack() {
   
               if (route.name === 'Home') {
                 iconName = focused
-                  ? 'ios-information-circle'
-                  : 'ios-information-circle-outline';
+                  ? 'home'
+                  : 'home';
               } else if (route.name === 'Search') {
-                iconName = focused ? 'ios-list-box' : 'ios-list';
+                iconName = focused ? 'search' : 'search';
               }
               else if (route.name === 'Profile') {
-                iconName = focused ? 'ios-list-box' : 'ios-list';
+                iconName = focused ? 'person' : 'person';
               }
   
               // You can return any component that you like here!
               return <Ionicons name={iconName} size={size} color={color} />;
             },
-            tabBarActiveTintColor: 'tomato',
+            tabBarActiveTintColor: 'green',
             tabBarInactiveTintColor: 'gray',
           })}
         >
