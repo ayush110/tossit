@@ -1,7 +1,5 @@
-# tossit
+# TossIt - Waste Analytics Software
 Source code for Toss It Waste Analytics Software
-
-# Waste Analytics Software
 
 ## Problem:
 
