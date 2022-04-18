@@ -1,68 +1,91 @@
 import { useState, useEffect} from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { Camera } from 'expo-camera';
+import { View, Text, StyleSheet, Image, Button } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function Search() {
 
-    const [hasPermission, setHasPermission] = useState(null);
-    const [type, setType] = useState(Camera.Constants.Type.back);
+   // The path of the picked image
+  const [pickedImagePath, setPickedImagePath] = useState('');
 
-     useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+  // This function is triggered when the "Select an image" button pressed
+  const showImagePicker = async () => {
+    // Ask the user for the permission to access the media library 
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (hasPermission === null) {
-        return <View />;
-      }
-      if (hasPermission === false) {
-        return <Text>No access to camera</Text>;
-      }
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your photos!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync();
+
+    // Explore the result
+    console.log(result);
+
+    if (!result.cancelled) {
+      setPickedImagePath(result.uri);
+      console.log(result.uri);
+    }
+  }
+
+  // This function is triggered when the "Open camera" button pressed
+  const openCamera = async () => {
+    // Ask the user for the permission to access the camera
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync();
+
+    // Explore the result
+    console.log(result);
+
+    if (!result.cancelled) {
+      setPickedImagePath(result.uri);
+      console.log(result.uri);
+    }
+  }
 
   return (
-    <View style={styles.container}>
-      <Camera style={styles.camera} type={type}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
-              );
-            }}>
-            <Text style={styles.text}> Flip </Text>
-          </TouchableOpacity>
-        </View>
-      </Camera>
+    <View style={styles.screen}>
+      <View style={styles.buttonContainer}>
+        <Button onPress={showImagePicker} title="Select an image" />
+        <Button onPress={openCamera} title="Open camera" />
+      </View>
+
+      <View style={styles.imageContainer}>
+        {
+          pickedImagePath !== '' && <Image
+            source={{ uri: pickedImagePath }}
+            style={styles.image}
+          />
+        }
+      </View>
     </View>
-  )
-}
+  );
+    };
 
-
+    
 const styles = StyleSheet.create({
-    container: {
+    screen: {
       flex: 1,
-    },
-    camera: {
-      flex: 1,
-    },
-    buttonContainer: {
-      flex: 1,
-      backgroundColor: 'transparent',
-      flexDirection: 'row',
-      margin: 20,
-    },
-    button: {
-      flex: 0.1,
-      alignSelf: 'flex-end',
+      justifyContent: 'center',
       alignItems: 'center',
     },
-    text: {
-      fontSize: 18,
-      color: 'white',
+    buttonContainer: {
+      width: 400,
+      flexDirection: 'row',
+      justifyContent: 'space-around'
     },
+    imageContainer: {
+      padding: 30
+    },
+    image: {
+      width: 400,
+      height: 300,
+      resizeMode: 'cover'
+    }
   });
