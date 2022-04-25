@@ -13,6 +13,7 @@
     "@react-navigation/bottom-tabs": "^6.3.1",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/stack": "^6.2.1",
+    "axios": "^0.26.1",
     "dotenv": "^16.0.0",
     "expo": "~44.0.0",
     "expo-camera": "~12.1.2",
@@ -29,7 +30,8 @@
     "react-native-fs": "^2.19.0",
     "react-native-gesture-handler": "~2.1.0",
     "react-native-vector-icons": "^9.1.0",
-    "react-native-web": "0.17.1"
+    "react-native-web": "0.17.1",
+    "react-native-reanimated": "~2.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
