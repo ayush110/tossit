@@ -1,7 +1,5 @@
-# tossit
+# TossIt - Waste Analytics Software
 Source code for Toss It Waste Analytics Software
-
-# Waste Analytics Software
 
 ## Problem:
 
@@ -54,7 +52,9 @@ The app also lets you take a picture instead of a sensor. This data won’t be f
 
 ## Project Plan:
 
-1) Creating and training machine learning models to predict what the item is (catagorize list of 50-100 most common things people throw away)
+1) Creating and training machine learning model to predict what the item is (catagorize list of 50-100 most common things people throw away). 
+- Find model at https://colab.research.google.com/drive/1lKhuDRrNifkCcQJYwR6jhOxjfU-8rV1z?usp=sharing
+- Find data at https://www.kaggle.com/datasets/vyomkapadia/tossit
 
 2) Assign recyclable, organic or non-recyclable labels to each of the categories from above. 
 
