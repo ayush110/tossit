@@ -23,7 +23,7 @@ export default function Search() {
   
     if (!result.cancelled) {
       setPickedImage(result);
-      console.log(pickedImage);
+      console.log(result);
       /*let formData = new FormData();
 
       formData.append('image', {
@@ -50,8 +50,8 @@ export default function Search() {
     
             const image = {
               uri: result.uri,
-              type: 'image/jpg',
-              name: 'formData'
+              type: "image/jpeg",
+              name: "something"
             }
             console.log(image)
             // Instantiate a FormData() object

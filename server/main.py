@@ -36,7 +36,7 @@ def pong():
 async def predict(formData: UploadFile = File(...)):    
     
     if formData.content_type.startswith('image/') is False:
-        raise HTTPException(status_code=400, detail=f'File \'{image.filename}\' is not an image.')    
+        raise HTTPException(status_code=400, detail=f'File \'{formData.filename}\' is not an image.')    
 
     
     
