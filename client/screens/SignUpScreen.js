@@ -4,10 +4,8 @@ import { StyleSheet, Text, View, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Button } from 'react-native-elements';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import {getFirestore, setDoc, doc, collection} from 'firebase/firestore'; 
-import { db } from '../config/firebase';
-const auth = getAuth();
 
+const auth = getAuth();
 
 
 
@@ -29,20 +27,8 @@ const [value, setValue] = React.useState({
     }
   
     try {
-      await createUserWithEmailAndPassword(auth, value.email, value.password)
-      .then(async cred => {
-        
-        navigation.navigate('Sign In'),
-
-        await setDoc(doc(db, "users", cred.user.uid), {
-          employment: "plumber",
-          outfitColor: "red",
-          specialAttack: "fireball"
-        })
-        
-      }
-        );
-      
+      await createUserWithEmailAndPassword(auth, value.email, value.password);
+      navigation.navigate('Sign In');
     } catch (error) {
       setValue({
         ...value,

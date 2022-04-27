@@ -3,7 +3,7 @@
 import { initializeApp } from 'firebase/app';
 
 import 'firebase/auth';
-import { getFirestore } from "firebase/firestore";
+import {getFirestore } from "firebase/firestore";
 import Constants from 'expo-constants';
 
 import { APIKEY, AUTHDOMAIN, PROJECTID, STORAGEBUCKET, MESSAGINGSENDERID, APPID, MEASUREMENTID} from '@env';
@@ -36,6 +36,6 @@ const firebaseConfig = {
   measurementId: "G-2THZ1ZF0R6"
 };
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+const db = getFirestore;
 
 export default app;

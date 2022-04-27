@@ -2,6 +2,7 @@ import { useState, useEffect} from "react";
 import { Platform, View, Text, StyleSheet, Image, Button } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import axios from "axios";
+
 export default function Search() {
 
    // The path of the picked image
@@ -9,11 +10,12 @@ export default function Search() {
   const [prediction, setPrediction] = useState('');
   // This function is triggered when the "Select an image" button pressed
   const showImagePicker = async () => {
+
     // Ask the user for the permission to access the media library 
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your photos!");
+      alert("You've refused to allow this app to access your photos!");
       return;
     }
 
@@ -23,62 +25,29 @@ export default function Search() {
   
     if (!result.cancelled) {
       setPickedImage(result);
-      console.log(result);
-      /*let formData = new FormData();
+      // console.log(pickedImage);
+      
 
-      formData.append('image', {
-      //  uri: Platform.OS === 'android' ? pickedImage.uri : pickedImage.uri.replace('file://', ''),
-        uri: pickedImage
-      //  type: pickedImage.type,
-       
-      });
+      const url = 'http://127.0.0.1:8000/predict';
 
-      console.log(formData);
-
-      let img = new FormData()
-      img.append('image', fs.createReadStream('/C:/Users/ayush/Downloads/10179760-gr.jpg'));
-
-      axios.post('http://127.0.0.1:8000/predict', img, {
-        headers: {'Content-Type': 'multipart/form-data'}, })
-            .then(function (response) {
-                setPrediction(response)
-                
-            })
-            .catch(function (error) {
-                console.log(error, 'error');
-            });*/
-    
-            const image = {
-              uri: result.uri,
-              type: "image/jpeg",
-              name: "something"
-            }
-            console.log(image)
-            // Instantiate a FormData() object
-            const imgBody = new FormData();
-            // append the image to the object with the title 'image'
-            imgBody.append('image', image);
-            const url = `http://127.0.0.1:8000/predict`;
-            // Perform the request. Note the content type - very important
-            let response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data',
-              },
-              body: imgBody
-              }).then(res => res.json()).then(results => {
-                // Just me assigning the image url to be seen in the view
-               console.log(results)
-            }).catch(error => {
-              console.error(error);
-            });
-            console.log(response)
+      // Perform the request. Note the content type - very important
+      let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          //'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({'data': result.uri})
+        }).then(res => res.json()).then(res => setPrediction(res['class'])).catch(error => {
+                                                        console.error(error);
+                                                        });
+            
     }
-        }
+  }
 
   // This function is triggered when the "Open camera" button pressed
   const openCamera = async () => {
+    // setPrediction("NUMBER 2")
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -93,9 +62,23 @@ export default function Search() {
   
     if (!result.cancelled) {
       setPickedImage(result);
-      
-      
-      axios.post('http://127.0.0.1:8000/predict/', {
+      // console.log(pickedImage);
+
+      const url = 'http://127.0.0.1:8000/predict';
+
+      // Perform the request. Note the content type - very important
+      let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          //'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({'data': result.uri})
+        }).then(res => res.json()).then(res => setPrediction(res['class'])).catch(error => {
+                                                        console.error(error);
+                                                        });
+
+      /* axios.post('http://127.0.0.1:8000/predict/', {
           result
             })
             .then(function (response) {
@@ -104,7 +87,7 @@ export default function Search() {
             })
             .catch(function (error) {
                 console.log(error, 'error');
-            });
+            }); */
     }
   }
 
