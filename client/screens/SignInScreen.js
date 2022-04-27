@@ -3,12 +3,8 @@ import { StyleSheet, Text, View, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input, Button } from 'react-native-elements';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import {getFirestore, setDoc, doc, collection} from 'firebase/firestore'; 
-import { db } from '../config/firebase';
+
 const auth = getAuth();
-
-
-
 
 const SignInScreen = () => {
   const [value, setValue] = React.useState({
@@ -27,10 +23,7 @@ const SignInScreen = () => {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, value.email, value.password).then(cred =>{
-         db.collection('users').doc(cred.user.uid).set({
-
-         })})
+      await signInWithEmailAndPassword(auth, value.email, value.password);
     } catch (error) {
       setValue({
         ...value,
