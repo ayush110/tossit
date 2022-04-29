@@ -1,6 +1,9 @@
 import { useState, useEffect} from "react";
 import { Platform, View, Text, StyleSheet, Image, Button } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { getAuth } from 'firebase/auth';
+import {setDoc, doc, getDoc} from 'firebase/firestore'; 
+import { db } from '../config/firebase';
 import axios from "axios";
 
 export default function Search() {
@@ -29,6 +32,7 @@ export default function Search() {
       
 
       const url = 'http://127.0.0.1:8000/predict';
+      let classOfImage = '';
 
       // Perform the request. Note the content type - very important
       let response = await fetch(url, {
@@ -38,9 +42,30 @@ export default function Search() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({'data': result.uri})
-        }).then(res => res.json()).then(res => setPrediction(res['class'])).catch(error => {
-                                                        console.error(error);
-                                                        });
+      }).then(res => res.json()).then(res => {
+        setPrediction(res['class'])
+        classOfImage = res['class']
+      }).catch(error => {
+        console.error(error);
+      });
+
+      console.log(classOfImage)
+      const user = getAuth().currentUser;
+
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      
+      let newTotal = 0; 
+      if (docSnap.exists() && classOfImage in docSnap.data()) {
+        newTotal = docSnap.data()[classOfImage]+1
+      } 
+      else {
+        newTotal = 1
+      }
+
+      let docData = {}
+      docData[classOfImage] = newTotal;
+
+      await setDoc(doc(db, "users", user.uid), docData, { merge: true })
             
     }
   }
@@ -52,7 +77,7 @@ export default function Search() {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
+      alert("You've refused to allow this app to access your camera!");
       return;
     }
 

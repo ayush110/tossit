@@ -27,7 +27,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 """@app.post("/predict")
 async def predict(formData: UploadFile = File(...)):
 
@@ -70,12 +69,12 @@ async def predict2(dataIn: dict):
 
         predicted_class = model.predictWaste(pil_image)
 
-        logging.info(f"Predicted Class: {predicted_class}")
+        # logging.info(f"Predicted Class: {predicted_class}")
         return {"class": predicted_class}
 
     except Exception as error:
         print("HELPPP")
-        logging.exception(error)
+        # logging.exception(error)
         # e = sys.exc_info()[1]
         # raise HTTPException(status_code=500, detail=str(e))
         return {'class': 'There was an error proccessing your request, please try again'}

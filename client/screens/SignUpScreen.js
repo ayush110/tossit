@@ -35,9 +35,9 @@ const [value, setValue] = React.useState({
         navigation.navigate('Sign In'),
 
         await setDoc(doc(db, "users", cred.user.uid), {
-          employment: "plumber",
-          outfitColor: "red",
-          specialAttack: "fireball"
+          Organic: 0,
+          Garbage: 0,
+          Recycling: 0
         })
         
       }
