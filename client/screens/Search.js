@@ -74,20 +74,30 @@ export default function Search() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({'data': result.uri})
-        }).then(res => res.json()).then(res => setPrediction(res['class'])).catch(error => {
-                                                        console.error(error);
-                                                        });
+      }).then(res => res.json()).then(res => {
+        setPrediction(res['class'])
+        classOfImage = res['class']
+      }).catch(error => {
+        console.error(error);
+      });
 
-      /* axios.post('http://127.0.0.1:8000/predict/', {
-          result
-            })
-            .then(function (response) {
-                setPrediction(response)
-               
-            })
-            .catch(function (error) {
-                console.log(error, 'error');
-            }); */
+      console.log(classOfImage)
+      const user = getAuth().currentUser;
+
+      const docSnap = await getDoc(doc(db, "users", user.uid));
+      
+      let newTotal = 0; 
+      if (docSnap.exists() && classOfImage in docSnap.data()) {
+        newTotal = docSnap.data()[classOfImage]+1
+      } 
+      else {
+        newTotal = 1
+      }
+
+      let docData = {}
+      docData[classOfImage] = newTotal;
+
+      await setDoc(doc(db, "users", user.uid), docData, { merge: true })
     }
   }
 
