@@ -49,7 +49,9 @@ function Profile() {
   const screenWidth = Dimensions.get("window").width;
 
   const data = getData()
+  console.log(data)
   data.then(data2 => console.log(data2));
+
   // Promise.allSettled([data]).then((results) => results.forEach((result) => console.log(result.status)));
 
 
