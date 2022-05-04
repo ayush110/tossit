@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { StyleSheet, Text, View } from 'react-native';
 import { useAuthentication } from '../utils/hooks/useAuthentication';
 import { Button, Tab } from 'react-native-elements';
@@ -12,49 +12,63 @@ import {
 } from "react-native-chart-kit";
 
 
-async function getData() {
-  const userTemp = getAuth().currentUser;
-  const docSnap = await getDoc(doc(db, "users", userTemp.uid));
 
-  return [
-    {
-      name: "Garbage",
-      population: docSnap.data()['Garbage'],
-      color: "#021012",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15
-    },
-    {
-      name: "Recycling",
-      population: docSnap.data()['Organic'],
-      color: "light green",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15
-    },
-    {
-      name: "Compost",
-      population: docSnap.data()['Recycling'],
-      color: "light blue",
-      legendFontColor: "#7F7F7F",
-      legendFontSize: 15
-    }
-  ];
-}
 
 function Profile() {
-
+  useEffect(()=>{
+    getData();
+  })
+  
+  const [pieData, setPieData] = useState([0,0,0])
   const { user } = useAuthentication();
   const auth = getAuth();
   
   const screenWidth = Dimensions.get("window").width;
-
+/*
   const data = getData()
   console.log(data)
   data.then(data2 => console.log(data2));
-
+*/
   // Promise.allSettled([data]).then((results) => results.forEach((result) => console.log(result.status)));
 
+const getData = async () => {
+  const userTemp = getAuth().currentUser;
+  await getDoc(doc(db, "users", userTemp.uid)).then((docSnap) =>{
+    let garbage = docSnap.data()['Garbage']
+    let recycling = docSnap.data()['Recycling']
+    let organic = docSnap.data()['Organic']
+    
+    setPieData([garbage, recycling, organic])
 
+    
+  }
+    
+  );
+};
+
+const dataPie = [
+  {
+    name: "Garbage",
+    population: pieData[0],
+    color: "#021012",
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15
+  },
+  {
+    name: "Recycling",
+    population: pieData[1],
+    color: "light green",
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15
+  },
+  {
+    name: "Compost",
+    population: pieData[2],
+    color: "light blue",
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15
+  }
+];
 
   const chartConfig = {
     backgroundGradientFrom: "#1E2923",
@@ -75,7 +89,7 @@ function Profile() {
 
 
       <PieChart
-        data={getData()}
+        data={dataPie}
         width={screenWidth}
         height={220}
         chartConfig={chartConfig}

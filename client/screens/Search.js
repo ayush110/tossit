@@ -1,6 +1,9 @@
 import { useState, useEffect} from "react";
 import { Platform, View, Text, StyleSheet, Image, Button } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { getAuth } from 'firebase/auth';
+import {setDoc, doc, getDoc} from 'firebase/firestore'; 
+import { db } from '../config/firebase';
 import axios from "axios";
 
 export default function Search() {
@@ -29,42 +32,7 @@ export default function Search() {
       
 
       const url = 'http://127.0.0.1:8000/predict';
-
-      // Perform the request. Note the content type - very important
-      let response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          //'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({'data': result.uri})
-        }).then(res => res.json()).then(res => setPrediction(res['class'])).catch(error => {
-                                                        console.error(error);
-                                                        });
-            
-    }
-  }
-
-  // This function is triggered when the "Open camera" button pressed
-  const openCamera = async () => {
-    // setPrediction("NUMBER 2")
-    // Ask the user for the permission to access the camera
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync();
-
-    // Explore the result
-  
-    if (!result.cancelled) {
-      setPickedImage(result);
-      // console.log(pickedImage);
-
-      const url = 'http://127.0.0.1:8000/predict';
+      let classOfImage = '';
 
       // Perform the request. Note the content type - very important
       let response = await fetch(url, {
@@ -98,6 +66,53 @@ export default function Search() {
       docData[classOfImage] = newTotal;
 
       await setDoc(doc(db, "users", user.uid), docData, { merge: true })
+            
+    }
+  }
+
+  // This function is triggered when the "Open camera" button pressed
+  const openCamera = async () => {
+    // setPrediction("NUMBER 2")
+    // Ask the user for the permission to access the camera
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this app to access your camera!");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync();
+
+    // Explore the result
+  
+    if (!result.cancelled) {
+      setPickedImage(result);
+      // console.log(pickedImage);
+
+      const url = 'http://127.0.0.1:8000/predict';
+
+      // Perform the request. Note the content type - very important
+      let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          //'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({'data': result.uri})
+        }).then(res => res.json()).then(res => setPrediction(res['class'])).catch(error => {
+                                                        console.error(error);
+                                                        });
+
+      /* axios.post('http://127.0.0.1:8000/predict/', {
+          result
+            })
+            .then(function (response) {
+                setPrediction(response)
+               
+            })
+            .catch(function (error) {
+                console.log(error, 'error');
+            }); */
     }
   }
 
