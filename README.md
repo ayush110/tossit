@@ -1,7 +1,7 @@
 # TossIt - Waste Analytics Software
 Source code for Toss It Waste Analytics Software
 
-
+*File popup is not recorded
 https://user-images.githubusercontent.com/67121244/167263145-62d1ecbb-d913-4aa8-85a0-bc55cf39aa13.mp4
 
 
