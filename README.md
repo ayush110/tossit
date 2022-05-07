@@ -1,6 +1,10 @@
 # TossIt - Waste Analytics Software
 Source code for Toss It Waste Analytics Software
 
+
+https://user-images.githubusercontent.com/67121244/167263145-62d1ecbb-d913-4aa8-85a0-bc55cf39aa13.mp4
+
+
 ## Problem:
 
 A lot of industrial/commercial kitchens have an inventory management issue (especially if they are a local and small business. A lot of food gets wasted sometimes, wheras there is a shortage of food/inventory during other times. It is hard to keep track of which items need to be purchased or should be purchased less of because there are a lot of higher priority items. 
