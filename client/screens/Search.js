@@ -53,8 +53,12 @@ export default function Search() {
       const user = getAuth().currentUser;
 
       const docSnap = await getDoc(doc(db, "users", user.uid));
+      const date = new Date().toLocaleString()
+      const lineData = docSnap.data()["linegraph"];
+
       
       let newTotal = 0; 
+
       if (docSnap.exists() && classOfImage in docSnap.data()) {
         newTotal = docSnap.data()[classOfImage]+1
       } 
@@ -65,7 +69,30 @@ export default function Search() {
       let docData = {}
       docData[classOfImage] = newTotal;
 
+      const lineGraphData = {
+        Garbage: 0,
+        Recycling: 0,
+        Organic: 0
+      }
+      const newDate = date.split(' ')[0];
+
+      if (newDate in lineData){
+        console.log(true)
+      } else{
+        console.log(false)
+        await setDoc(doc(db, "users", user.uid, "linegraph"), lineGraphData, { merge: true })
+        
+      }
+
+
       await setDoc(doc(db, "users", user.uid), docData, { merge: true })
+
+
+      
+
+
+
+
             
     }
   }
