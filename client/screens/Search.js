@@ -54,9 +54,13 @@ export default function Search() {
 
       const docSnap = await getDoc(doc(db, "users", user.uid));
       const date = new Date().toLocaleString()
-      const lineData = docSnap.data()["linegraph"];
-
-
+      let lineData;
+      if ("linegraph" in docSnap.data()){
+        lineData = docSnap.data()["linegraph"];
+      } else{
+        let linegraph = {}
+        await setDoc(doc(db, "users", user.uid), linegraph, { merge: true });
+      }
       
       let newTotal = 0; 
 
@@ -70,25 +74,12 @@ export default function Search() {
       let docData = {}
       docData[classOfImage] = newTotal;
 
-     
-     
-      let dayTotal = 0
 
-      const day = date.split(' ')[0];
-      
+      let day = date.split(' ')[0];
+
       let Garbage = 0
       let Recycling = 0
       let Organic = 0
-
-      if (lineData[day]["Garbage"]){
-        Garbage = lineData[day]["Garbage"]
-      } 
-      if (lineData[day]["Recycling"]){
-        Recycling = lineData[day]["Recycling"]
-      } 
-      if (lineData[day]["Organic"]){
-        Organic = lineData[day]["Organic"]
-      } 
 
       let lineGraphData = {
         "linegraph": {
@@ -100,9 +91,22 @@ export default function Search() {
           }
       }
 
-      lineGraphData["linegraph"][day][classOfImage] += 1
-
-      await setDoc(doc(db, "users", user.uid), lineGraphData, { merge: true });
+      if (day in lineData){
+        lineGraphData = {
+          "linegraph": {
+            [day]: {
+              "Recycling": lineData[day]["Recycling"],
+              "Garbage": lineData[day]["Garbage"],
+              "Organic": lineData[day]["Organic"]
+            }
+            }
+        }
+        lineGraphData["linegraph"][day][classOfImage] += 1
+        await setDoc(doc(db, "users", user.uid), lineGraphData, { merge: true });
+      } else{
+        await setDoc(doc(db, "users", user.uid), lineGraphData, { merge: true });
+      }
+      
       await setDoc(doc(db, "users", user.uid), docData, { merge: true });
             
     }
