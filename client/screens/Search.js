@@ -75,14 +75,14 @@ export default function Search() {
       docData[classOfImage] = newTotal;
 
 
-      let day = date.split(' ')[0];
-
+      let day = date.split(' ')[0].slice(0,-1);
+      
       let Garbage = 0
       let Recycling = 0
       let Organic = 0
 
       let lineGraphData = {
-        "linegraph": {
+        "linegraph": {  
           [day]: {
             "Recycling": Recycling,
             "Garbage": Garbage,

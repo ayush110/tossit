@@ -25,6 +25,7 @@ export default function HomeScreen() {
   })
   
   const [pieData, setPieData] = useState([0,0,0])
+  let [datagraph, SetDataGraph] = useState([0,0,0,0,0,0,0])
   const { user } = useAuthentication();
   const auth = getAuth();
   
@@ -48,6 +49,20 @@ const getData = async () => {
   }
   );
 };
+
+async function getLabelData(date) {
+  const userTemp = getAuth().currentUser;
+  await getDoc(doc(db, "users", userTemp.uid)).then((docSnap) =>{
+    let garbage = docSnap.data()['Garbage']
+    let recycling = docSnap.data()['Recycling']
+    let organic = docSnap.data()['Organic']
+    
+    SetDataGraph([garbage, recycling, organic])
+  }
+  );
+ 
+ 
+}
 
 const dataPie = [
   {
@@ -79,6 +94,40 @@ const chartConfig = {
   color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
   strokeWidth: 2 // optional, default 3
 }
+
+function Last7Days () {
+  var result = [];
+  for (var i=6; i>=0; i--) {
+      var d = new Date();
+      d.setDate(d.getDate() - i);
+      result.push( d.toLocaleString().split(' ')[0].slice(0,-1) )
+  }
+
+  return(result);
+}
+let dataSets = []
+let firebaseLabels = Last7Days();
+firebaseLabels.forEach(async (element, index) =>  {
+  
+  await getLabelData(element)
+  dataSets.push(
+    {
+      data: [
+      datagraph[0],
+      datagraph[1],
+      datagraph[2]
+    ]
+  }
+  )
+
+});
+
+
+
+
+let label = Last7Days();
+label.forEach((element, index) => {label[index] = element.slice(0,-5)});
+
   return (
       <View>
      
@@ -102,25 +151,28 @@ const chartConfig = {
 
 <LineChart
     data={{
-      labels: ["January", "February", "March", "April", "May", "June"],
+      labels: label,
       datasets: [
         {
-          data: [
-            100
+        data:[
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      {
+        data:[
+          0,
+          1,
+          2
+        ]
+      },
 
-          ]
-        },
-        {
-          data: [
-            200
-          ]
-        },
-        {
-          data: [
-            150
-          ]
-        }
-      ]
+    ]
     }}
     width={screenWidth - 10} // from react-native
     height={220}
