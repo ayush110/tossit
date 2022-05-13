@@ -25,64 +25,104 @@ export default function HomeScreen() {
   })
   
   const [pieData, setPieData] = useState([0,0,0])
-  const { user } = useAuthentication();
-  const auth = getAuth();
+  const [lineData, setLineData] = useState({})
   
   const screenWidth = Dimensions.get("window").width;
-/*
-  const data = getData()
-  console.log(data)
-  data.then(data2 => console.log(data2));
-*/
-  // Promise.allSettled([data]).then((results) => results.forEach((result) => console.log(result.status)));
 
-const getData = async () => {
-  const userTemp = getAuth().currentUser;
-  await getDoc(doc(db, "users", userTemp.uid)).then((docSnap) =>{
-    let garbage = docSnap.data()['Garbage']
-    let recycling = docSnap.data()['Recycling']
-    let organic = docSnap.data()['Organic']
+  const getData = async () => {
+    const userTemp = getAuth().currentUser;
+    await getDoc(doc(db, "users", userTemp.uid)).then((docSnap) =>{
+      let garbage = docSnap.data()['Garbage']
+      let recycling = docSnap.data()['Recycling']
+      let organic = docSnap.data()['Organic']
+      
+      setPieData([garbage, recycling, organic])
+
+      if ('linegraph' in docSnap.data()) {
+        setLineData(docSnap.data()['linegraph']);
+      }
+      else {
+        setLineData({});
+      }
+    });
+  };
+
+  const dataPie = [
+    {
+      name: "Garbage",
+      population: pieData[0],
+      color: "#808080",
+      legendFontColor: "black",
+      legendFontSize: 15
+    },
+    {
+      name: "Recycling",
+      population: pieData[1],
+      color: "#ADD8E6",
+      legendFontColor: "black",
+      legendFontSize: 15
+    },
+    {
+      name: "Compost",
+      population: pieData[2],
+      color: "#013220",
+      legendFontColor: "black",
+      legendFontSize: 15
+    }
+  ];
+
+  const chartConfig = {
+    backgroundGradientFrom: '#1E2923',
+    backgroundGradientTo: '#08130D',
+    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    strokeWidth: 2 // optional, default 3
+  }
+
+  const tempDate = new Date().toLocaleString();
+  let date = tempDate.split(', ')[0];
+  let day = parseInt(date.split('/')[0]);
+  let month = parseInt(date.split('/')[1]);
+  let year = parseInt(date.split('/')[2]);
+  let lineGraphLabels = []
+  let recycleLineData = []
+  let garbageLineData = []
+  let compostLineData = []
+
+  for (let i=0; i<7; i++) {
+    if (day < 0) {
+      month -= 1
+      if (month <= 0) {
+        month = 12;
+        year -= 1;
+      }
+      day = [31, 30, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30][month-1]
+    }
+    date = ('' + day) + '/' + ('' + month)+ '/' + ('' + year);
+    lineGraphLabels.push(date);
+    day -= 1;
     
-    setPieData([garbage, recycling, organic])
+    if (date in lineData) {
+      recycleLineData.push(lineData[date]['Recycling']);
+      garbageLineData.push(lineData[date]['Garbage']);
+      compostLineData.push(lineData[date]['Organic']);
+    }
+    else {
+      recycleLineData.push(0);
+      garbageLineData.push(0);
+      compostLineData.push(0);
+    }
 
   }
-  );
-};
+  lineGraphLabels = lineGraphLabels.reverse();
+  recycleLineData = recycleLineData.reverse();
+  garbageLineData = garbageLineData.reverse();
+  compostLineData = compostLineData.reverse();
 
-const dataPie = [
-  {
-    name: "Garbage",
-    population: pieData[0],
-    color: "#808080",
-    legendFontColor: "black",
-    legendFontSize: 15
-  },
-  {
-    name: "Recycling",
-    population: pieData[1],
-    color: "#ADD8E6",
-    legendFontColor: "black",
-    legendFontSize: 15
-  },
-  {
-    name: "Compost",
-    population: pieData[2],
-    color: "#013220",
-    legendFontColor: "black",
-    legendFontSize: 15
-  }
-];
 
-const chartConfig = {
-  backgroundGradientFrom: '#1E2923',
-  backgroundGradientTo: '#08130D',
-  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-  strokeWidth: 2 // optional, default 3
-}
   return (
       <View>
      
-     <Text>Waste Disposal Data</Text>
+      <Text>Waste Disposal Data</Text>
 
       <PieChart
         data={dataPie}
@@ -102,32 +142,31 @@ const chartConfig = {
 
 <LineChart
     data={{
-      labels: ["January", "February", "March", "April", "May", "June"],
+      labels: lineGraphLabels,
       datasets: [
         {
-          data: [
-            100
-
-          ]
+          data: recycleLineData,
+          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
+          strokeWidth: 2 // optional
         },
         {
-          data: [
-            200
-          ]
+          data: garbageLineData,
+          color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`, // optional
+          strokeWidth: 2 // optional
         },
         {
-          data: [
-            150
-          ]
-        }
-      ]
+          data: compostLineData,
+          color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`, // optional
+          strokeWidth: 2 // optional
+        },
+      ],
+      legend: ["Recycling", "Garbage", "Compost"]
     }}
     width={screenWidth - 10} // from react-native
     height={220}
-    
     yAxisInterval={1} // optional, defaults to 1
     chartConfig={chartConfig}
-    bezier
+    //bezier   only for curved line
     style={{
       marginVertical: 8,
       justifyContent: "center",
