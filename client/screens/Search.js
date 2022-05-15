@@ -54,7 +54,7 @@ export default function Search() {
 
       const docSnap = await getDoc(doc(db, "users", user.uid));
       const date = new Date().toLocaleString()
-      let lineData;
+      let lineData = {};
       if ("linegraph" in docSnap.data()){
         lineData = docSnap.data()["linegraph"];
       } else{
@@ -74,6 +74,7 @@ export default function Search() {
       let docData = {}
       docData[classOfImage] = newTotal;
 
+      
 
       let day = date.split(' ')[0].slice(0,-1);
       
