@@ -2,7 +2,7 @@ import { useState, useEffect} from "react";
 import { Platform, View, Text, StyleSheet, Image, Button } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { getAuth } from 'firebase/auth';
-import {setDoc, doc, getDoc} from 'firebase/firestore'; 
+import {setDoc, doc, getDoc, updateDoc, FieldValue, serverTimestamp, Timestamp} from 'firebase/firestore'; 
 import { db } from '../config/firebase';
 import axios from "axios";
 
@@ -110,6 +110,7 @@ export default function Search() {
       }
       
       await setDoc(doc(db, "users", user.uid), docData, { merge: true });
+      await updateDoc(doc(db, "users", user.uid), {Timestamp: serverTimestamp()}, { merge: true });
             
     }
   }

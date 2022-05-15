@@ -6,7 +6,7 @@ import { getAuth, signOut } from 'firebase/auth';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import {setDoc, doc, getDoc, onSnapshot,} from 'firebase/firestore'; 
+import {setDoc, doc, getDoc, onSnapshot, Timestamp,} from 'firebase/firestore'; 
 import { db } from '../config/firebase';
 import { Dimensions } from 'react-native';
 import Search from './Search';
@@ -23,23 +23,28 @@ const Stack = createStackNavigator();
 export default function HomeScreen() {
   const [pieData, setPieData] = useState([0,0,0]);
   const [lineData, setLineData] = useState({});
+  const [timeStamp, setTimeStamp] = useState('');
   
-  const pieDataObject = {"garbage": pieData[0], "recycling": pieData[1], "compost": pieData[2]};
+  //const pieDataObject = {"garbage": pieData[0], "recycling": pieData[1], "compost": pieData[2]};
 
-  console.log(pieDataObject);
+ // console.log(pieDataObject);
   const { user } = useAuthentication();
   const auth = getAuth();
   
   const screenWidth = Dimensions.get("window").width;
-/* ONLY NECESSARY FOR UPDATES THAT HAPPEN VERY QUICKLY - FOR OUR PURPOSES, IT INCREASES LATENCY
+ 
+  
+
+useEffect(()=>{
   const userTemp = getAuth().currentUser;
   const unsub = onSnapshot(doc(db, "users", userTemp.uid), (doc) => {
     
-    console.log(" data: ", doc.data());
-    setPieData([doc.data()['Garbage'], doc.data()['Recycling'], doc.data()['Organic']])
+    if (doc.data()['Timestamp'].toLocaleString() != timeStamp){
+      setTimeStamp(doc.data()['Timestamp'].toLocaleString())
+    }
+    
 });
-*/
-useEffect(()=>{
+
   getData();
   //console.log("fetching-data")
  // console.log(pieDataObject)
