@@ -135,24 +135,35 @@ const dataPie = [
   }
 ];
 
-const chartConfig = {
+const pieChartConfig = {
   backgroundGradientFrom: '#1E2923',
   backgroundGradientTo: '#08130D',
-  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
   strokeWidth: 2 // optional, default 3
+}
+
+const lineGraphConfig = {
+  backgroundGradientFrom: "white",
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: "white",
+  backgroundGradientToOpacity: 0.5,
+  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  strokeWidth: 2, // optional, default 3
+  barPercentage: 0,
+  useShadowColorFromDataset: false // optional
 }
 
 
   
   return (
     <View >
-      <Text>{pieData}</Text>
+    <Text>{pieData}</Text>
 
       <PieChart
         data={dataPie}
         width={screenWidth}
         height={220}
-        chartConfig={chartConfig}
+        chartConfig={pieChartConfig}
         accessor={"population"}
         backgroundColor="transparent"
         paddingLeft={"15"}
@@ -169,17 +180,17 @@ const chartConfig = {
       datasets: [
         {
           data: recycleLineData,
-          color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
+          color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`, // optional
           strokeWidth: 2 // optional
         },
         {
           data: garbageLineData,
-          color: (opacity = 1) => `rgba(0, 255, 0, ${opacity})`, // optional
+          color: (opacity = 1) => `rgba(190, 190, 190, ${opacity})`, // optional
           strokeWidth: 2 // optional
         },
         {
           data: compostLineData,
-          color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`, // optional
+          color: (opacity = 1) => `rgba(0, 100, 0, ${opacity})`, // optional
           strokeWidth: 2 // optional
         },
       ],
@@ -188,14 +199,15 @@ const chartConfig = {
     width={screenWidth - 10} // from react-native
     height={220}
     yAxisInterval={1} // optional, defaults to 1
-    chartConfig={chartConfig}
+    chartConfig={lineGraphConfig}
     //bezier   only for curved line
     style={{
       marginVertical: 8,
       justifyContent: "center",
       marginLeft: 10,
       marginRight: 10,
-      borderRadius: 16
+      borderRadius: 16,
+      backgroundColor: 'white',
     }}
   />
 
