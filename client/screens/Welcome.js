@@ -6,12 +6,15 @@ import { Button } from 'react-native-elements';
 export default function WelcomeScreen({navigation}) {
   return (
     <View style={styles.container}>
-      <Text>Welcome screen!</Text>
+      <Text style={styles.tossit}>toss it</Text>
 
       <View style={styles.buttons}>
-        <Button title="Sign in" buttonStyle={styles.button} onPress={() => navigation.navigate('Sign In')} />
-        <Button title="Sign up" type="outline" buttonStyle={styles.button} onPress={() => navigation.navigate('Sign Up')} />
-      </View>
+        <Button title="Sign in" buttonStyle={styles.buttonx} onPress={() => navigation.navigate('Sign In')} />
+        </View>
+<View style={styles.buttons}>
+        <Button title="Sign up" buttonStyle={styles.buttonx} onPress={() => navigation.navigate('Sign Up')} />
+        </View>
+      
     </View>
   );
 }
@@ -19,8 +22,27 @@ export default function WelcomeScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
+  tossit: {
+    fontSize: 50,
+    color: '#006400',
+    marginBottom: 20,
+  },
+  buttons: {
+    
+    
+  },
+  buttonx: {
+    width: 180,
+    textDecorationColor: 'white',
+    color: 'white',
+    marginBottom: 10,
+    borderColor: '#FFFFFF',
+    backgroundColor: '#006400',
+    borderRadius: 93,
+  }
 });
