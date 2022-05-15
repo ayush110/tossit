@@ -39,10 +39,9 @@ useEffect(()=>{
   const userTemp = getAuth().currentUser;
   const unsub = onSnapshot(doc(db, "users", userTemp.uid), (doc) => {
     
-    if (doc.data()['Timestamp'].toLocaleString() != timeStamp){
-      setTimeStamp(doc.data()['Timestamp'].toLocaleString())
+    if (doc.data()['Timestamp'] != timeStamp){
+      setTimeStamp(doc.data()['Timestamp'])
     }
-    
 });
 
   getData();
@@ -146,7 +145,7 @@ const chartConfig = {
   
   return (
     <View >
-      <Text>{pieData}</Text>
+      
 
       <PieChart
         data={dataPie}
