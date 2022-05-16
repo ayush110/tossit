@@ -45,11 +45,8 @@ export default function Search() {
       }).then(res => res.json()).then(res => {
         setPrediction(res['class'])
         classOfImage = res['class']
-        console.log(classOfImage);
       }).catch(error => {
         console.error(error);
-        console.log(error);
-        console.log("error");
       });
 
       console.log(classOfImage)
