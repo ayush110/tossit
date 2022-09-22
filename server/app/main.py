@@ -2,7 +2,8 @@ from binascii import a2b_base64
 import uvicorn
 from fastapi import Form, FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from model import wasteClassification
+from model import wasteClassification   
+
 
 from pydantic import BaseModel
 
@@ -14,7 +15,7 @@ import logging
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-origins = ["*"]
+origins = ["https://my-firebase-app.web.app"]
 
 app = FastAPI()
 model = wasteClassification()
@@ -69,6 +70,7 @@ async def predict2(dataIn: dict):
 
         predicted_class = model.predictWaste(pil_image)
 
+        print("success")
         # logging.info(f"Predicted Class: {predicted_class}")
         return {"class": predicted_class}
 
@@ -81,11 +83,11 @@ async def predict2(dataIn: dict):
 
 
 
+"""
 @app.post("/test")
-async def test(string: string):
+async def test(string):
 
     try:
-        print('suces2')
         return "success"
     except Exception as error:
         print("HELPPP")
@@ -93,3 +95,4 @@ async def test(string: string):
         # e = sys.exc_info()[1]
         # raise HTTPException(status_code=500, detail=str(e))
         return {'class': 'There was an error proccessing your request, please try again'}
+"""
