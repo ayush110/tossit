@@ -83,7 +83,7 @@ async def predict2(dataIn: dict):
 
 
 
-"""
+
 @app.post("/test")
 async def test(string):
 
@@ -95,4 +95,3 @@ async def test(string):
         # e = sys.exc_info()[1]
         # raise HTTPException(status_code=500, detail=str(e))
         return {'class': 'There was an error proccessing your request, please try again'}
-"""

@@ -82,7 +82,7 @@ async def predict2(dataIn: dict):
 
 
 @app.post("/test")
-async def test(string: string):
+async def test(string):
 
     try:
         print('suces2')

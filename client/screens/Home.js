@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { useAuthentication } from '../utils/hooks/useAuthentication';
-import { Button, Tab } from 'react-native-elements';
+import { Tab } from 'react-native-elements';
 import { getAuth, signOut } from 'firebase/auth';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -47,7 +47,7 @@ useEffect(()=>{
   getData();
   //console.log("fetching-data")
  // console.log(pieDataObject)
-},[])
+},[timeStamp])
 
 function Last7Days () {
     var result = [];
@@ -141,8 +141,6 @@ const chartConfig = {
   strokeWidth: 2 // optional, default 3
 }
 
-
-  
   return (
     <View >
       
@@ -197,9 +195,6 @@ const chartConfig = {
       borderRadius: 16
     }}
   />
-
-        
-    
 
     </View>
   );

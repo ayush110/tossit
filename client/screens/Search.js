@@ -1,207 +1,208 @@
-import { useState, useEffect} from "react";
-import { Platform, View, Text, StyleSheet, Image, Button } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { getAuth } from 'firebase/auth';
-import {setDoc, doc, getDoc, updateDoc, FieldValue, serverTimestamp, Timestamp} from 'firebase/firestore'; 
-import { db } from '../config/firebase';
+import { useState, useEffect, useRef } from "react";
+import { Platform, View, Text, StyleSheet, Image, Button } from "react-native";
+// import * as ImagePicker from "expo-image-picker";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native";
+
+import { Camera } from "expo-camera";
+import { shareAsync } from "expo-sharing";
+import * as MediaLibrary from "expo-media-library";
+import { getAuth } from "firebase/auth";
+import {
+  setDoc,
+  doc,
+  getDoc,
+  updateDoc,
+  FieldValue,
+  serverTimestamp,
+  Timestamp,
+} from "firebase/firestore";
+import { db } from "../config/firebase";
 import axios from "axios";
 
 export default function Search() {
+  let cameraRef = useRef();
+  const [hasCameraPermission, setHasCameraPermission] = useState();
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+  const [photo, setPhoto] = useState();
 
-   // The path of the picked image
-  const [pickedImage, setPickedImage] = useState('');
-  const [prediction, setPrediction] = useState('');
-  // This function is triggered when the "Select an image" button pressed
-  const showImagePicker = async () => {
+  useEffect(() => {
+    (async () => {
+      const cameraPermission = await Camera.requestCameraPermissionsAsync();
+      const mediaLibraryPermission =
+        await MediaLibrary.requestPermissionsAsync();
+      setHasCameraPermission(cameraPermission.status === "granted");
+      setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
+    })();
+  }, []);
 
-    // Ask the user for the permission to access the media library 
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("You've refused to allow this app to access your photos!");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync();
-    
-    // Explore the result
-  
-    if (!result.cancelled) {
-      setPickedImage(result);
-      // console.log(pickedImage);
-      
-
-      const url = 'http://127.0.0.1:8000/predict';
-      let classOfImage = '';
-
-      // Perform the request. Note the content type - very important
-      let response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          //'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({'data': result.uri})
-      }).then(res => res.json()).then(res => {
-        setPrediction(res['class'])
-        classOfImage = res['class']
-      }).catch(error => {
-        console.error(error);
-      });
-
-      console.log(classOfImage)
-      const user = getAuth().currentUser;
-
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      const date = new Date().toLocaleString()
-      let lineData = {};
-      if ("linegraph" in docSnap.data()){
-        lineData = docSnap.data()["linegraph"];
-      } else{
-        let linegraph = {}
-        await setDoc(doc(db, "users", user.uid), linegraph, { merge: true });
-      }
-      
-      let newTotal = 0; 
-
-      if (docSnap.exists() && classOfImage in docSnap.data()) {
-        newTotal = docSnap.data()[classOfImage]+1
-      } 
-      else {
-        newTotal = 1
-      }
-
-      let docData = {}
-      docData[classOfImage] = newTotal;
-
-      
-
-      let day = date.split(' ')[0].slice(0,-1);
-      
-      let Garbage = 0
-      let Recycling = 0
-      let Organic = 0
-
-      let lineGraphData = {
-        "linegraph": {  
-          [day]: {
-            "Recycling": Recycling,
-            "Garbage": Garbage,
-            "Organic": Organic
-          }
-          }
-      }
-
-      if (day in lineData){
-        lineGraphData = {
-          "linegraph": {
-            [day]: {
-              "Recycling": lineData[day]["Recycling"],
-              "Garbage": lineData[day]["Garbage"],
-              "Organic": lineData[day]["Organic"]
-            }
-            }
-        }
-        lineGraphData["linegraph"][day][classOfImage] += 1
-        await setDoc(doc(db, "users", user.uid), lineGraphData, { merge: true });
-      } else{
-        lineGraphData["linegraph"][day][classOfImage] += 1
-        await setDoc(doc(db, "users", user.uid), lineGraphData, { merge: true });
-      }
-      
-      await setDoc(doc(db, "users", user.uid), docData, { merge: true });
-      await updateDoc(doc(db, "users", user.uid), {Timestamp: serverTimestamp()}, { merge: true });
-            
-    }
+  if (hasCameraPermission === undefined) {
+    return <Text>Requesting permissions...</Text>;
+  } else if (!hasCameraPermission) {
+    return (
+      <Text>
+        Permission for camera not granted. Please change this in settings.
+      </Text>
+    );
   }
 
-  // This function is triggered when the "Open camera" button pressed
-  const openCamera = async () => {
-    // setPrediction("NUMBER 2")
-    // Ask the user for the permission to access the camera
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+  let takePic = async () => {
+    let options = {
+      quality: 1,
+      base64: true,
+      exif: false,
+    };
 
-    if (permissionResult.granted === false) {
-      alert("You've refused to allow this app to access your camera!");
-      return;
-    }
+    let newPhoto = await cameraRef.current.takePictureAsync(options);
+    setPhoto(newPhoto);
+  };
 
-    const result = await ImagePicker.launchCameraAsync();
+  if (photo) {
+    let sharePic = () => {
+      shareAsync(photo.uri).then(() => {
+        setPhoto(undefined);
+      });
+    };
 
-    // Explore the result
-  
-    if (!result.cancelled) {
-      setPickedImage(result);
-      // console.log(pickedImage);
+    let savePhoto = async () => {
+      MediaLibrary.saveToLibraryAsync(photo.uri).then(() => {
+        setPhoto(undefined);
+      });
+      let formdata = new FormData();
+      formdata.append("photo", {
+        uri: photo.uri,
+        name: "image.jpg",
+        type: "image/jpeg",
+      });
 
-      const url = 'http://127.0.0.1:8000/predict';
+      const url = "http://127.0.0.1:5000/predict";
 
-      // Perform the request. Note the content type - very important
-      let response = await fetch(url, {
-        method: 'POST',
+      fetch(url, {
+        method: "POST",
         headers: {
           //'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({'data': result.uri})
-        }).then(res => res.json()).then(res => setPrediction(res['class'])).catch(error => {
-                                                        console.error(error);
-                                                        });
+        body: formdata,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setPrediction(res["class"]);
+          classOfImage = res["class"];
+        })
+        .catch((error) => {
+          console.error(error);
+        });
 
-      /* axios.post('http://127.0.0.1:8000/predict/', {
-          result
-            })
-            .then(function (response) {
-                setPrediction(response)
-               
-            })
-            .catch(function (error) {
-                console.log(error, 'error');
-            }); */
-    }
+      console.log(classOfImage);
+    };
+
+    //     const user = getAuth().currentUser;
+
+    //     const docSnap = await getDoc(doc(db, "users", user.uid));
+    //     const date = new Date().toLocaleString();
+    //     let lineData = {};
+    //     if ("linegraph" in docSnap.data()) {
+    //       lineData = docSnap.data()["linegraph"];
+    //     } else {
+    //       let linegraph = {};
+    //       await setDoc(doc(db, "users", user.uid), linegraph, { merge: true });
+    //     }
+
+    //     let newTotal = 0;
+
+    //     if (docSnap.exists() && classOfImage in docSnap.data()) {
+    //       newTotal = docSnap.data()[classOfImage] + 1;
+    //     } else {
+    //       newTotal = 1;
+    //     }
+
+    //     let docData = {};
+    //     docData[classOfImage] = newTotal;
+
+    //     let day = date.split(" ")[0].slice(0, -1);
+
+    //     let Garbage = 0;
+    //     let Recycling = 0;
+    //     let Organic = 0;
+
+    //     let lineGraphData = {
+    //       linegraph: {
+    //         [day]: {
+    //           Recycling: Recycling,
+    //           Garbage: Garbage,
+    //           Organic: Organic,
+    //         },
+    //       },
+    //     };
+
+    //     if (day in lineData) {
+    //       lineGraphData = {
+    //         linegraph: {
+    //           [day]: {
+    //             Recycling: lineData[day]["Recycling"],
+    //             Garbage: lineData[day]["Garbage"],
+    //             Organic: lineData[day]["Organic"],
+    //           },
+    //         },
+    //       };
+    //       lineGraphData["linegraph"][day][classOfImage] += 1;
+    //       await setDoc(doc(db, "users", user.uid), lineGraphData, {
+    //         merge: true,
+    //       });
+    //     } else {
+    //       lineGraphData["linegraph"][day][classOfImage] += 1;
+    //       await setDoc(doc(db, "users", user.uid), lineGraphData, {
+    //         merge: true,
+    //       });
+    //     }
+
+    //     await setDoc(doc(db, "users", user.uid), docData, { merge: true });
+    //     await updateDoc(
+    //       doc(db, "users", user.uid),
+    //       { Timestamp: serverTimestamp() },
+    //       { merge: true }
+    //     );
+    //   }
+    // };
+
+    return (
+      <SafeAreaView style={styles.container}>
+        <Image
+          style={styles.preview}
+          source={{ uri: "data:image/jpg;base64," + photo.base64 }}
+        />
+        <Button title="Share" onPress={sharePic} />
+        {hasMediaLibraryPermission ? (
+          <Button title="Save" onPress={savePhoto} />
+        ) : undefined}
+        <Button title="Discard" onPress={() => setPhoto(undefined)} />
+      </SafeAreaView>
+    );
   }
 
   return (
-    <View style={styles.screen}>
+    <Camera style={styles.container} ref={cameraRef}>
       <View style={styles.buttonContainer}>
-        <Button onPress={showImagePicker} title="Select an image" />
-        <Button onPress={openCamera} title="Open camera" />
+        <Button title="Take Pic" onPress={takePic} />
       </View>
-
-      <View style={styles.imageContainer}>
-        {
-          pickedImage !== '' && <Image
-            source={{ uri: pickedImage.uri }}
-            style={styles.image}
-          />
-          
-        }
-        <Text>{prediction}</Text>
-      </View>
-    </View>
+      <StatusBar style="auto" />
+    </Camera>
   );
-    };
+}
 
-    
 const styles = StyleSheet.create({
-    screen: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    buttonContainer: {
-      width: 400,
-      flexDirection: 'row',
-      justifyContent: 'space-around'
-    },
-    imageContainer: {
-      padding: 30
-    },
-    image: {
-      width: 400,
-      height: 300,
-      resizeMode: 'cover'
-    }
-  });
-
-  
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonContainer: {
+    backgroundColor: "#fff",
+    alignSelf: "flex-end",
+  },
+  preview: {
+    alignSelf: "stretch",
+    flex: 1,
+  },
+});
