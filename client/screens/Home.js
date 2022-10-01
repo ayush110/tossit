@@ -25,10 +25,10 @@ export default function HomeScreen() {
   useFocusEffect(
     React.useCallback(() => {
 
-      alert('Screen was focused');
+      // alert('Screen was focused');
 
       return () => {
-        alert('Screen was unfocused');
+        // alert('Screen was unfocused');
         // Useful for cleanup functions
       };
     }, [])
@@ -142,7 +142,7 @@ export default function HomeScreen() {
     <View>
       
 
-      <PieChart
+      {/*<PieChart
         data={dataPie}
         width={screenWidth}
         height={220}
@@ -191,7 +191,7 @@ export default function HomeScreen() {
           marginRight: 10,
           borderRadius: 16
         }}
-      />
+      />*/}
 
         
     
