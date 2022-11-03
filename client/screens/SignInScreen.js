@@ -34,14 +34,16 @@ const SignInScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Signin screen!</Text>
+      <View>
+        <Text style={styles.title}>Welcome back! Glad to see you, Again!</Text>
+      </View>
 
       {!!value.error && <View style={styles.error}><Text>{value.error}</Text></View>}
 
-      <View style={styles.controls}>
+      <View style={styles.input}>
         <TextInput
           placeholder='Email'
-          containerStyle={styles.control}
+          containerStyle={styles.email}
           value={value.email}
           onChangeText={(text) => setValue({ ...value, email: text })}
           leftIcon={<Icon
@@ -52,7 +54,7 @@ const SignInScreen = () => {
 
         <TextInput
           placeholder='Password'
-          containerStyle={styles.control}
+          containerStyle={styles.password}
           value={value.password}
           onChangeText={(text) => setValue({ ...value, password: text })}
           secureTextEntry={true}
@@ -76,21 +78,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  title: {
 
-  controls: {
-    flex: 1,
+    fontFamily: 'DM Sans',
+    fontStyle: 'normal',
+    fontSize: 30,
+    fontWeight: '700',
+    //letter-spacing: -0.01em,
+
+    color: '#1E232C',
   },
 
-  control: {
-    marginTop: 10
-  },
 
   error: {
     marginTop: 10,
     padding: 10,
     color: '#fff',
     backgroundColor: '#D54826FF',
-  }
+  },
 });
 
 export default SignInScreen;
