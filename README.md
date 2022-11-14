@@ -2,13 +2,11 @@
 Source code for Toss It Waste Analytics Software
 
 ![Group 17781](https://user-images.githubusercontent.com/67121244/201576737-537561e0-3c33-43ed-9dd2-3ad77e00adab.png)
-
 ![Group 17784](https://user-images.githubusercontent.com/67121244/201576760-099fead9-cbd0-49ee-8671-1e6fc72b5ae2.png)
 ![Group 17783](https://user-images.githubusercontent.com/67121244/201576761-2459abc0-694f-4d85-ad8c-c564b53983a0.png)
 ![Group 17782](https://user-images.githubusercontent.com/67121244/201576762-c100f5bd-fd33-4b10-a19c-ac52f174e0f0.png)
-![Group 17786](https://user-images.githubusercontent.com/67121244/201576763-5d91f14a-3d6d-4e9a-a80d-246b5f06cd49.png)
 ![Group 17785](https://user-images.githubusercontent.com/67121244/201576764-ad85b106-d95c-473b-ab5b-b36a0f713dd2.png)
-
+![Group 17786](https://user-images.githubusercontent.com/67121244/201576763-5d91f14a-3d6d-4e9a-a80d-246b5f06cd49.png)
 
 ## Problem:
 
