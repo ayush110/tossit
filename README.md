@@ -1,7 +1,9 @@
 # TossIt - Waste Analytics Software
 Source code for Toss It Waste Analytics Software
 
-![Group 17781](https://user-images.githubusercontent.com/67121244/201576737-537561e0-3c33-43ed-9dd2-3ad77e00adab.png  | width=100)
+<div style="width:60px ; height:60px">
+![Group 17781](https://user-images.githubusercontent.com/67121244/201576737-537561e0-3c33-43ed-9dd2-3ad77e00adab.png)
+    <div>
 ![Group 17784](https://user-images.githubusercontent.com/67121244/201576760-099fead9-cbd0-49ee-8671-1e6fc72b5ae2.png)
 ![Group 17783](https://user-images.githubusercontent.com/67121244/201576761-2459abc0-694f-4d85-ad8c-c564b53983a0.png)
 ![Group 17782](https://user-images.githubusercontent.com/67121244/201576762-c100f5bd-fd33-4b10-a19c-ac52f174e0f0.png)
